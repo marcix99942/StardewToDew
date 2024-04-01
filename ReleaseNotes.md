@@ -1,6 +1,12 @@
 
 # Release Notes
 
+## Version 2.1.0
+
+* Add configuration option for adding new items at either the top or
+  bottom of the list.  In multiplayer games, only the host's setting
+  matters.
+
 ## Version 2.0.0
 
 * Built for SDV 1.6 / SMAPI 4.0.  No functionality changes, but

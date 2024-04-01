@@ -10,6 +10,9 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 
 namespace ToDew {
+    public enum ListAddLocation {
+        Top, Bottom
+    }
     /// <summary>The configuration data model.</summary>
     public class ModConfig {
         public SButton hotkey = SButton.L;
@@ -17,6 +20,7 @@ namespace ToDew {
         public SButton secondaryCloseButton = SButton.ControllerBack;
         public bool debug = false;
         public bool enableMobilePhoneApp = true;
+        public ListAddLocation addLocation = ListAddLocation.Bottom;
         public OverlayConfig overlay = new OverlayConfig();
     }
     /// <summary>The To-Dew mod.</summary>
@@ -109,6 +113,15 @@ namespace ToDew {
                         getValue: () => config.enableMobilePhoneApp,
                         setValue: (bool val) => config.enableMobilePhoneApp = val);
                 }
+                api.AddTextOption(
+                    mod: ModManifest,
+                    name: I18n.Config_AddLocation,
+                    tooltip: I18n.Config_AddLocation_Desc,
+                    allowedValues: Enum.GetNames<ListAddLocation>(),
+                    formatAllowedValue: (v) => Helper.Translation.Get("config.add-location." + v),
+                    getValue: () => config.addLocation.ToString(),
+                    setValue: (v) => config.addLocation = Enum.Parse<ListAddLocation>(v));
+
                 OverlayConfig.RegisterConfigMenuOptions(() => config.overlay, api, apiExt, ModManifest);
             }
 

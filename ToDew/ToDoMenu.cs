@@ -523,9 +523,9 @@ namespace ToDew {
         private int MaxScroll;
         /// <summary>The number of pixels to scroll.</summary>
         private int CurrentScroll;
-        /// <summary>Force the CurrentScroll to the bottom (MaxScroll) after rendering all items</summary>
+        /// <summary>Force the CurrentScroll to the current add location (i.e., top or bottom (MaxScroll)) after rendering all items</summary>
         /// Set after adding an item because adding is asynchronous for farmhands.  Cleared on other actions.
-        private bool forceScrollToBottom = false;
+        private bool forceScrollToAddLocation = false;
 
         /// <summary>The area where list items are rendered (used to filter mouse clicks)</summary>
         private Rectangle contentArea = Rectangle.Empty;
@@ -671,8 +671,8 @@ namespace ToDew {
 
                     // update max scroll
                     this.MaxScroll = Math.Max(0, (int)(topOffset - contentHeight + this.CurrentScroll));
-                    if (forceScrollToBottom) {
-                        this.CurrentScroll = this.MaxScroll;
+                    if (forceScrollToAddLocation) {
+                        this.CurrentScroll = theMod.config.addLocation == ListAddLocation.Top ? 0 : this.MaxScroll;
                     }
 
                     // draw scroll icons
@@ -712,7 +712,7 @@ namespace ToDew {
                 if (key.Equals(Keys.Enter)) {
                     this.theList.AddItem(this.Textbox.Text);
                     this.Textbox.Text = "";
-                    this.forceScrollToBottom = true;
+                    this.forceScrollToAddLocation = true;
                     //this.MaxScroll += MenuItem.MenuItemHeight;
                     //this.CurrentScroll = this.MaxScroll;
                     Game1.playSound("coin");
@@ -753,7 +753,7 @@ namespace ToDew {
         /// <summary>The method invoked when the player scrolls the mouse wheel on the lookup UI.</summary>
         /// <param name="direction">The scroll direction.</param>
         public override void receiveScrollWheelAction(int direction) {
-            this.forceScrollToBottom = false;
+            this.forceScrollToAddLocation = false;
             this.CurrentScroll -= direction; // down direction == increased scroll
         }
 
@@ -763,7 +763,7 @@ namespace ToDew {
         /// <param name="playSound">Whether to enable sound.</param>
         public override void receiveLeftClick(int x, int y, bool playSound = true) {
             const int scrollAmount = 120;
-            this.forceScrollToBottom = false;
+            this.forceScrollToAddLocation = false;
             if (!contentArea.Contains(x, y)) return;
             if (scrollUpRect.Contains(x, y)) {
                 this.CurrentScroll -= scrollAmount;
@@ -790,7 +790,7 @@ namespace ToDew {
         /// <param name="y">The Y-position of the cursor.</param>
         /// <param name="playSound">Whether to enable sound.</param>
         public override void receiveRightClick(int x, int y, bool playSound = true) {
-            this.forceScrollToBottom = false;
+            this.forceScrollToAddLocation = false;
             if (!contentArea.Contains(x, y)) return;
             if (currentItemEditor != null) return;
             foreach (MenuItem match in this.menuItemList) {
