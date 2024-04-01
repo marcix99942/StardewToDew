@@ -6,6 +6,8 @@
 * Add configuration option for adding new items at either the top or
   bottom of the list.  In multiplayer games, only the host's setting
   matters.
+* Re-enable integration with the successor(s) to Aedenthorn's
+  Mobile Phone mod.
 
 ## Version 2.0.0
 

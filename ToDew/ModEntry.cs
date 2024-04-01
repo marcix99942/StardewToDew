@@ -20,6 +20,7 @@ namespace ToDew {
         public SButton secondaryCloseButton = SButton.ControllerBack;
         public bool debug = false;
         public bool enableMobilePhoneApp = true;
+        public List<String> mobilePhoneModIds = new List<string> { "aedenthorn.MobilePhone", "JoXW.MobilePhone", "datamancer.MobilePhone" };
         public ListAddLocation addLocation = ListAddLocation.Bottom;
         public OverlayConfig overlay = new OverlayConfig();
     }
@@ -33,7 +34,7 @@ namespace ToDew {
         private readonly PerScreen<ToDoListOverlayDataSource> toDoListOverlayDataSource;
         internal ModConfig config = new(); // create (and throw away) a default value to keep nullability check happy
 
-        private IMobilePhoneApi? phoneApi;
+        private readonly List<IMobilePhoneApi> phoneApis = new();
 
         // Number of game update ticks to wait before registering with Mobile Phone
         // (so that the fetch from the content pipeline will reflect CP changes).
@@ -73,8 +74,19 @@ namespace ToDew {
         }
 
         private void onLaunched(object? sender, GameLaunchedEventArgs e) {
-            // integrate with MobilePhone, if installed
-            phoneApi = Helper.ModRegistry.GetApi<IMobilePhoneApi>("aedenthorn.MobilePhone");
+            // integrate with MobilePhone, if installed - if _any_ of the ones I know about are
+            // installed - and make that list configurable so sorting out the succession of aedenthorn's
+            // mods is somebody else's problem.
+            foreach (String phoneModId in config.mobilePhoneModIds) {
+                try {
+                    var phoneApi = Helper.ModRegistry.GetApi<IMobilePhoneApi>(phoneModId);
+                    if (phoneApi is not null) {
+                        phoneApis.Add(phoneApi);
+                    }
+                } catch (Exception ex) {
+                    Monitor.Log($"Error trying to get mobile phone API from {phoneModId}: {ex.Message}", LogLevel.Warn);
+                }
+            }
 
             // integrate with Generic Mod Config Menu, if installed
             var api = Helper.ModRegistry.GetApi<GenericModConfigMenuAPI>("spacechase0.GenericModConfigMenu");
@@ -105,7 +117,7 @@ namespace ToDew {
                     tooltip: I18n.Config_Debug_Desc,
                     getValue: () => config.debug,
                     setValue: (bool val) => config.debug = val);
-                if (phoneApi is not null) {
+                if (phoneApis.Count > 0) {
                     api.AddBoolOption(
                         mod: ModManifest,
                         name: I18n.Config_EnableMobilePhoneApp,
@@ -125,7 +137,7 @@ namespace ToDew {
                 OverlayConfig.RegisterConfigMenuOptions(() => config.overlay, api, apiExt, ModManifest);
             }
 
-            if (phoneApi is not null && config.enableMobilePhoneApp) {
+            if (phoneApis.Count > 0 && config.enableMobilePhoneApp) {
                 Helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicked;
             }
 
@@ -138,15 +150,15 @@ namespace ToDew {
         private void OnUpdateTicked(object? sender, UpdateTickingEventArgs e) {
             if (ticksUntilRegisterWithMobilePhone == 0) {
                 Helper.Events.GameLoop.UpdateTicking -= this.OnUpdateTicked;
-                if (phoneApi is null) return; // shouldn't happen, but let's keep the static analyzer happy
-
                 Helper.Events.Content.AssetRequested += LoadMobilePhoneIcon;
                 var icon = Game1.content.Load<Texture2D>($"Mods/{ModManifest.UniqueID}/MobilePhoneIcon");
                 Helper.Events.Content.AssetRequested -= LoadMobilePhoneIcon;
 
-                phoneApi.AddApp(Helper.ModRegistry.ModID, "To-Dew",
-                    () => { Game1.activeClickableMenu = new ToDoMenu(this, this.list!.Value!); },
-                    icon);
+                foreach(var phoneApi in phoneApis) {
+                    phoneApi.AddApp(Helper.ModRegistry.ModID, "To-Dew",
+                        () => { Game1.activeClickableMenu = new ToDoMenu(this, this.list!.Value!); },
+                        icon);
+                }
             }
             ticksUntilRegisterWithMobilePhone--;
         }
