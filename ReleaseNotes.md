@@ -1,6 +1,10 @@
 
 # Release Notes
 
+## Version 2.1.3
+
+* Added Vietnamese translation from nexusmods user Blazemc2k5
+
 ## Version 2.1.2
 
 * Updated French translation from nexusmods user Caranud
