@@ -165,16 +165,18 @@ namespace ToDew {
 
         private void LoadMobilePhoneIcon(object? sender, AssetRequestedEventArgs e) {
             if (e.Name.IsEquivalentTo($"Mods/{ModManifest.UniqueID}/MobilePhoneIcon")) {
+                // TownIndoors removed in 1.6.9
                 // This is a whole lot of trouble to be able to use something out of one of the built-in
                 // tile sheets, since the mobile phone api doesn't support specifying a rectangle for
                 // the sprite.
-                Texture2D originalTexture = Game1.content.Load<Texture2D>("Maps\\TownIndoors");
-                Rectangle sourceRectangle = new Rectangle(202, 1870, 48, 48);
-                Texture2D cropTexture = new Texture2D(Game1.graphics.GraphicsDevice, sourceRectangle.Width, sourceRectangle.Height);
-                Color[] data = new Color[sourceRectangle.Width * sourceRectangle.Height];
-                originalTexture.GetData(0, sourceRectangle, data, 0, data.Length);
-                cropTexture.SetData(data);
-                e.LoadFrom(() => cropTexture, AssetLoadPriority.Low);
+                // Texture2D originalTexture = Game1.content.Load<Texture2D>("Maps\\TownIndoors");
+                // Rectangle sourceRectangle = new Rectangle(202, 1870, 48, 48);
+                // Texture2D cropTexture = new Texture2D(Game1.graphics.GraphicsDevice, sourceRectangle.Width, sourceRectangle.Height);
+                // Color[] data = new Color[sourceRectangle.Width * sourceRectangle.Height];
+                // originalTexture.GetData(0, sourceRectangle, data, 0, data.Length);
+                // cropTexture.SetData(data);
+                // e.LoadFrom(() => cropTexture, AssetLoadPriority.Low);
+                e.LoadFromModFile<Texture2D>("assets/mobile-phone-icon.png", AssetLoadPriority.Low);
             }
         }
 

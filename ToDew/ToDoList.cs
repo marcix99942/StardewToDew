@@ -331,7 +331,7 @@ namespace ToDew {
         /// <summary>
         /// Mark an item done (or not done).
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="isDone">the new value of IsDone</param>
         public void SetItemDone(ListItem item, bool isDone) {
             if (Context.IsMainPlayer) {
@@ -345,7 +345,7 @@ namespace ToDew {
         /// <summary>
         /// Mark an item as having bold text (or not)
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="isBold">whether the text should be bold</param>
         public void SetItemBold(ListItem item, bool isBold) {
             if (Context.IsMainPlayer) {
@@ -359,7 +359,7 @@ namespace ToDew {
         /// <summary>
         /// Mark an item as a header (or not).  Headers can not be marked done (in the UI).
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="isHeader">whether the item is a header</param>
         public void SetItemHeader(ListItem item, bool isHeader) {
             if (Context.IsMainPlayer) {
@@ -374,7 +374,7 @@ namespace ToDew {
         /// Mark an item as repeating (or not).  Repeating items that are marked done are
         /// reset at the end of the day rather than deleted.
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="isRepeating">whether the item is repeating</param>
         public void SetItemRepeating(ListItem item, bool isRepeating) {
             if (Context.IsMainPlayer) {
@@ -388,7 +388,7 @@ namespace ToDew {
         /// <summary>
         /// Set the item repeat period
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="days">how many days before the item repeats</param>
         public void SetItemRepeatDays(ListItem item, int days) {
             if (Context.IsMainPlayer) {
@@ -402,7 +402,7 @@ namespace ToDew {
         /// <summary>
         /// Mark an item as hidden in the overlay (or not).
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="isHidden">whether the item is hidden in the overlay</param>
         public void SetItemHiddenInOverlay(ListItem item, bool isHidden) {
             if (Context.IsMainPlayer) {
@@ -446,7 +446,7 @@ namespace ToDew {
         /// Set or clear flags in the day-of-week visibility mask of an item.
         /// </summary>
         /// <param name="item">The item to update</param>
-        /// <param name="dayOfWeek">The flag to update</param>
+        /// <param name="flag">The flag to update</param>
         /// <param name="value">whether the flag should be set (true) or cleared (false)</param>
         public void SetItemDayVisibilityFlag(ListItem item, DayVisibility flag, bool value) {
             if (Context.IsMainPlayer) {
@@ -465,7 +465,7 @@ namespace ToDew {
         /// <summary>
         /// Set an item's text.
         /// </summary>
-        /// <param name="id">The item to update</param>
+        /// <param name="item">The item to update</param>
         /// <param name="text">the new value of the item's text</param>
         public void SetItemText(ListItem item, string text) {
             if (Context.IsMainPlayer) {
@@ -656,7 +656,7 @@ namespace ToDew {
                             break;
                         }
                     default:
-                        theMod.Monitor.Log(I18n.Message_IgnoringUnexpectedMessageType(messageType: e.Type, fromId: e.FromPlayerID, fromName: Game1.getFarmer(e.FromPlayerID)?.Name),
+                        theMod.Monitor.Log(I18n.Message_IgnoringUnexpectedMessageType(messageType: e.Type, fromId: e.FromPlayerID, fromName: Game1.GetPlayer(e.FromPlayerID)?.Name),
                             LogLevel.Warn);
                         break;
                 }
@@ -678,7 +678,7 @@ namespace ToDew {
                     theList = newList;
                     this.OnChanged?.Invoke(this, this.Items);
                 } else {
-                    theMod.Monitor.Log(I18n.Message_IgnoringUnexpectedMessageType(messageType: e.Type, fromId: e.FromPlayerID, fromName: Game1.getFarmer(e.FromPlayerID)?.Name),
+                    theMod.Monitor.Log(I18n.Message_IgnoringUnexpectedMessageType(messageType: e.Type, fromId: e.FromPlayerID, fromName: Game1.GetPlayer(e.FromPlayerID)?.Name),
                         LogLevel.Warn);
                 }
             }

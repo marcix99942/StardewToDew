@@ -1,6 +1,14 @@
 
 # Release Notes
 
+## Version 2.2.0
+
+* Built for SDV 1.6.10 / SMAPI 4.1.1.
+* The default icon when using the Mobile Phone mod integration is
+  now the same icon as the one used in the example optional download
+  that shows how to use Content Patcher to replace the icon.
+  (The previous icon was removed from the game because it was unused.)
+
 ## Version 2.1.3
 
 * Added Vietnamese translation from nexusmods user Blazemc2k5
